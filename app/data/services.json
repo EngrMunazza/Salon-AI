@@ -1,0 +1,35 @@
+{
+  "services": [
+    {
+      "name": "Haircut",
+      "price": 1500,
+      "duration": "45 minutes"
+    },
+    {
+      "name": "Hair Styling",
+      "price": 2000,
+      "duration": "60 minutes"
+    },
+    {
+      "name": "Facial",
+      "price": 2500,
+      "duration": "60 minutes"
+    },
+    {
+      "name": "Manicure",
+      "price": 1500,
+      "duration": "45 minutes"
+    },
+    {
+      "name": "Pedicure",
+      "price": 1800,
+      "duration": "60 minutes"
+    }
+  ],
+  "discounts": [
+    {
+      "name": "Weekend Offer",
+      "description": "10% off selected services on weekends"
+    }
+  ]
+}
