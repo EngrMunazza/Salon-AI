@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #FBF3EF;
+  color: #2E211C;
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+::selection {
+  background-color: #C97B84;
+  color: #FBF3EF;
+}
+
+/* Visible keyboard focus everywhere */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #B98B4E;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Hairline scallop divider — evokes a finished curl / comb pass between sections */
+.scallop-divider {
+  height: 14px;
+  width: 100%;
+  background-image: radial-gradient(circle at 10px 0, transparent 9px, #FBF3EF 10px);
+  background-size: 20px 14px;
+  background-repeat: repeat-x;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
