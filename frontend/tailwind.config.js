@@ -14,6 +14,7 @@ export default {
         gold: {
           DEFAULT: '#B98B4E',
           light: '#D9B98A',
+          dark: '#8C6636',
         },
         line: '#E8DCD4',
       },

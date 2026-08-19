@@ -1,45 +1,50 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { salonInfo } from '@/data/salonInfo';
+import { useChat } from '@/context/ChatContext';
 
 const links = [
   { href: '/', label: 'Home' },
   { href: '/services', label: 'Services' },
-  { href: '/about', label: 'Hours & Location' },
+  { href: '/gallery', label: 'Gallery' },
+  { href: '/team', label: 'Team' },
+  { href: '/about', label: 'About' },
+  { href: '/faq', label: 'FAQ' },
+  { href: '/contact', label: 'Visit & Contact' },
 ];
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const { setIsOpen } = useChat();
 
   return (
     <header className="sticky top-0 z-40 bg-blush/90 backdrop-blur border-b border-line">
-      <nav className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
-        <Link to="/" className="font-display text-2xl tracking-tight text-espresso">
+      <nav className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between gap-6">
+        <Link to="/" className="font-display text-2xl tracking-tight text-espresso shrink-0">
           {salonInfo.name}
         </Link>
 
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden lg:flex items-center gap-6">
           {links.map((l) => (
             <Link
               key={l.href}
               to={l.href}
-              className="text-sm uppercase tracking-[0.14em] text-espresso/80 hover:text-rose-dark transition-colors"
+              className="text-sm uppercase tracking-[0.1em] text-espresso/80 hover:text-rose-dark transition-colors whitespace-nowrap"
             >
               {l.label}
             </Link>
           ))}
-          <a
-            href={`https://wa.me/${salonInfo.whatsapp}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-full bg-espresso text-blush px-5 py-2 text-sm tracking-wide hover:bg-rose-dark transition-colors"
-          >
-            Book on WhatsApp
-          </a>
         </div>
 
         <button
-          className="md:hidden text-espresso"
+          onClick={() => setIsOpen(true)}
+          className="hidden lg:inline-block rounded-full bg-espresso text-blush px-5 py-2 text-sm tracking-wide hover:bg-rose-dark transition-colors shrink-0"
+        >
+          Book via chat
+        </button>
+
+        <button
+          className="lg:hidden text-espresso"
           aria-label={open ? 'Close menu' : 'Open menu'}
           aria-expanded={open}
           onClick={() => setOpen(!open)}
@@ -55,20 +60,21 @@ export default function Navbar() {
       </nav>
 
       {open && (
-        <div className="md:hidden border-t border-line px-6 py-4 flex flex-col gap-4 bg-blush">
+        <div className="lg:hidden border-t border-line px-6 py-4 flex flex-col gap-4 bg-blush">
           {links.map((l) => (
             <Link key={l.href} to={l.href} onClick={() => setOpen(false)} className="text-espresso text-base">
               {l.label}
             </Link>
           ))}
-          <a
-            href={`https://wa.me/${salonInfo.whatsapp}`}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={() => {
+              setOpen(false);
+              setIsOpen(true);
+            }}
             className="rounded-full bg-espresso text-blush px-5 py-2 text-sm text-center"
           >
-            Book on WhatsApp
-          </a>
+            Book via chat
+          </button>
         </div>
       )}
     </header>
