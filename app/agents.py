@@ -22,6 +22,7 @@ PLAIN_TEXT_INSTRUCTION = (
     "and lists as simple sentences or numbered lines like \"1. Haircut - 1500\"."
 )
 
+CURRENCY_INSTRUCTION = "All prices are in Pakistani Rupees. Always write prices as 'Rs. 1500', never use ₹, $, ₱, or any other currency symbol."
 
 class AgentState(TypedDict, total=False):
     session_id: str
@@ -82,6 +83,8 @@ Salon info:
 
 {plain_text_instruction}
 
+{currency_instruction}
+
 {language_instruction}
 """
 
@@ -96,6 +99,7 @@ def general_node(state: AgentState) -> AgentState:
     system_prompt = GENERAL_SYSTEM_PROMPT_TEMPLATE.format(
         salon_info=json.dumps(salon_info, ensure_ascii=False),
         plain_text_instruction=PLAIN_TEXT_INSTRUCTION,
+        currency_instruction=CURRENCY_INSTRUCTION,
         language_instruction=LANGUAGE_INSTRUCTION[state["language"]],
     )
     state["response"] = generate(system_prompt, state["message"], history=state.get("history"))
@@ -125,6 +129,8 @@ Services data:
 {services_data}
 
 {plain_text_instruction}
+
+{currency_instruction}
 
 {language_instruction}
 """
@@ -182,8 +188,10 @@ def services_node(state: AgentState) -> AgentState:
         today=datetime.now().strftime("%Y-%m-%d"),
         services_data=json.dumps(services_data, ensure_ascii=False),
         plain_text_instruction=PLAIN_TEXT_INSTRUCTION,
+        currency_instruction=CURRENCY_INSTRUCTION,
         language_instruction=LANGUAGE_INSTRUCTION[state["language"]],
     )
+    
     state["response"] = generate_with_tools(
         system_prompt, state["message"], BOOKING_TOOLS, TOOL_FUNCTIONS, history=state.get("history")
     )
