@@ -1,10 +1,12 @@
 import json
 import os
 from typing import TypedDict, Literal, List, Dict
+from datetime import datetime
 
 from langgraph.graph import StateGraph, END
 
-from app.llm import generate
+from app.llm import generate, generate_with_tools
+from app.booking_tools import check_availability, create_booking
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
@@ -18,7 +20,7 @@ LANGUAGE_INSTRUCTION = {
 class AgentState(TypedDict, total=False):
     session_id: str
     message: str
-    history: List[Dict[str, str]]  
+    history: List[Dict[str, str]]
 
     intent: Literal["general", "services"]
     language: Literal["en", "ur", "roman_ur"]
@@ -33,7 +35,7 @@ Given the latest customer message, output STRICT JSON only, no extra text:
 
 Rules:
 - "general" = greetings, questions about location/address/map/timings/contact, or the customer ending the conversation (thanks, bye).
-- "services" = anything about services offered, prices, discounts, promotions, packages.
+- "services" = anything about services offered, prices, discounts, promotions, packages, OR booking/scheduling an appointment.
 - "language": "en" for English, "ur" for Urdu script, "roman_ur" for Urdu written in Roman/English letters (e.g. "aap ka time kya hai").
 If unsure of intent, default to "general". If unsure of language, default to "en".
 """
@@ -91,17 +93,68 @@ def general_node(state: AgentState) -> AgentState:
 
 
 
-SERVICES_SYSTEM_PROMPT_TEMPLATE = """You are a salon assistant answering questions about
-services, pricing, discounts, and promotions. Only use the data provided
-below: never invent a service or price that isn't listed. If something
-isn't in the data, say it's not available right now. Keep replies short
-and clear, and mention relevant discounts/promotions when applicable.
+SERVICES_SYSTEM_PROMPT_TEMPLATE = """You are a salon assistant. You handle two things:
+
+1. Questions about services, pricing, discounts, and promotions — answer
+   only from the services data below, never invent a service or price.
+
+2. Booking appointments. When a customer wants to book:
+   - Figure out the service, date (convert to YYYY-MM-DD; today is {today}),
+     and time (convert to 24-hour HH:MM).
+   - If you don't have the customer's name or phone number yet, ask for them
+     before calling create_booking.
+   - Call check_availability first if you're unsure a slot is free.
+   - Call create_booking to actually reserve it once you have all details.
+   - If a slot is taken or outside business hours, apologize and offer the
+     alternative_times returned by the tool — never make up times yourself.
+   - After a successful booking, confirm the booking_id, service, date and time back to the customer.
 
 Services data:
 {services_data}
 
 {language_instruction}
 """
+
+BOOKING_TOOLS = [
+    {
+        "type": "function",
+        "function": {
+            "name": "check_availability",
+            "description": "Check if a given date and time slot is available for booking.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "date": {"type": "string", "description": "Date in YYYY-MM-DD format"},
+                    "time": {"type": "string", "description": "Time in 24-hour HH:MM format"},
+                },
+                "required": ["date", "time"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "create_booking",
+            "description": "Create a confirmed booking. Only call this once you have the customer's name, phone, service, date, and time, and the slot is available.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "customer_name": {"type": "string"},
+                    "phone": {"type": "string"},
+                    "service": {"type": "string"},
+                    "date": {"type": "string", "description": "YYYY-MM-DD"},
+                    "time": {"type": "string", "description": "24-hour HH:MM"},
+                },
+                "required": ["customer_name", "phone", "service", "date", "time"],
+            },
+        },
+    },
+]
+
+TOOL_FUNCTIONS = {
+    "check_availability": check_availability,
+    "create_booking": create_booking,
+}
 
 
 def _load_services() -> dict:
@@ -112,12 +165,14 @@ def _load_services() -> dict:
 def services_node(state: AgentState) -> AgentState:
     services_data = _load_services()
     system_prompt = SERVICES_SYSTEM_PROMPT_TEMPLATE.format(
+        today=datetime.now().strftime("%Y-%m-%d"),
         services_data=json.dumps(services_data, ensure_ascii=False),
         language_instruction=LANGUAGE_INSTRUCTION[state["language"]],
     )
-    state["response"] = generate(system_prompt, state["message"])
+    state["response"] = generate_with_tools(
+        system_prompt, state["message"], BOOKING_TOOLS, TOOL_FUNCTIONS
+    )
     return state
-
 
 
 def build_graph():

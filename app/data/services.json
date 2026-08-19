@@ -1,35 +1,26 @@
 {
   "services": [
-    {
-      "name": "Haircut",
-      "price": 1500,
-      "duration": "45 minutes"
-    },
-    {
-      "name": "Hair Styling",
-      "price": 2000,
-      "duration": "60 minutes"
-    },
-    {
-      "name": "Facial",
-      "price": 2500,
-      "duration": "60 minutes"
-    },
-    {
-      "name": "Manicure",
-      "price": 1500,
-      "duration": "45 minutes"
-    },
-    {
-      "name": "Pedicure",
-      "price": 1800,
-      "duration": "60 minutes"
-    }
+    { "id": "svc_001", "category": "Hair", "name": "Haircut & Styling", "price": 1500, "duration_minutes": 45, "discount": null },
+    { "id": "svc_002", "category": "Hair", "name": "Hair Wash & Blow Dry", "price": 1000, "duration_minutes": 30, "discount": null },
+    { "id": "svc_003", "category": "Hair", "name": "Hair Coloring", "price": 4000, "duration_minutes": 90, "discount": "10% off on weekdays" },
+    { "id": "svc_004", "category": "Hair", "name": "Hair Straightening / Keratin", "price": 6000, "duration_minutes": 120, "discount": null },
+    { "id": "svc_005", "category": "Hair", "name": "Hair Spa Treatment", "price": 2500, "duration_minutes": 60, "discount": null },
+    { "id": "svc_006", "category": "Skin", "name": "Facial - Classic", "price": 2500, "duration_minutes": 60, "discount": null },
+    { "id": "svc_007", "category": "Skin", "name": "Facial - Whitening", "price": 3500, "duration_minutes": 75, "discount": null },
+    { "id": "svc_008", "category": "Skin", "name": "Facial - Gold", "price": 5000, "duration_minutes": 90, "discount": "Free eyebrow shaping this month" },
+    { "id": "svc_009", "category": "Skin", "name": "Clean Up", "price": 1800, "duration_minutes": 40, "discount": null },
+    { "id": "svc_010", "category": "Nails", "name": "Manicure", "price": 1200, "duration_minutes": 40, "discount": null },
+    { "id": "svc_011", "category": "Nails", "name": "Pedicure", "price": 1500, "duration_minutes": 45, "discount": null },
+    { "id": "svc_012", "category": "Nails", "name": "Manicure & Pedicure Combo", "price": 2200, "duration_minutes": 75, "discount": "10% off" },
+    { "id": "svc_013", "category": "Nails", "name": "Nail Extensions", "price": 3000, "duration_minutes": 90, "discount": null },
+    { "id": "svc_014", "category": "Eyebrows & Lashes", "name": "Eyebrow Threading", "price": 300, "duration_minutes": 15, "discount": null },
+    { "id": "svc_015", "category": "Eyebrows & Lashes", "name": "Eyelash Extensions", "price": 3500, "duration_minutes": 90, "discount": null },
+    { "id": "svc_016", "category": "Makeup", "name": "Party Makeup", "price": 5000, "duration_minutes": 90, "discount": null },
+    { "id": "svc_017", "category": "Bridal", "name": "Bridal Makeup Package", "price": 15000, "duration_minutes": 180, "discount": "Free trial session included" },
+    { "id": "svc_018", "category": "Spa", "name": "Full Body Massage", "price": 4000, "duration_minutes": 60, "discount": null }
   ],
-  "discounts": [
-    {
-      "name": "Weekend Offer",
-      "description": "10% off selected services on weekends"
-    }
+  "promotions": [
+    "Flat 15% off on all hair services every Monday",
+    "Free eyebrow shaping with any facial this month"
   ]
 }
