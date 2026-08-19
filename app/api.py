@@ -27,7 +27,9 @@ class DeleteChatRequest(BaseModel):
 @router.post("/chat", response_model=ChatResponse)
 def chat(req: ChatRequest):
     graph = get_graph()
-    history = _sessions.get(req.session_id, [])
+    MAX_HISTORY_MESSAGES = 20  # last 10 user+assistant turns
+
+    history = _sessions.get(req.session_id, [])[-MAX_HISTORY_MESSAGES:]
 
     state: AgentState = {
         "session_id": req.session_id,
