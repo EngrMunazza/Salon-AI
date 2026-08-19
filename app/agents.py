@@ -16,6 +16,12 @@ LANGUAGE_INSTRUCTION = {
     "roman_ur": "Reply in Roman Urdu (Urdu written in English letters).",
 }
 
+PLAIN_TEXT_INSTRUCTION = (
+    "Reply in plain text only. Never use markdown formatting — no asterisks "
+    "for bold, no pipe tables, no bullet dashes, no headings. Write prices "
+    "and lists as simple sentences or numbered lines like \"1. Haircut - 1500\"."
+)
+
 
 class AgentState(TypedDict, total=False):
     session_id: str
@@ -29,20 +35,21 @@ class AgentState(TypedDict, total=False):
 
 
 SUPERVISOR_SYSTEM_PROMPT = """You are a routing classifier for a beauty salon chatbot.
-Given the latest customer message, output STRICT JSON only, no extra text:
+Given the conversation so far and the latest customer message, output STRICT
+JSON only, no extra text:
 
 {"intent": "general" | "services", "language": "en" | "ur" | "roman_ur"}
 
 Rules:
 - "general" = greetings, questions about location/address/map/timings/contact, or the customer ending the conversation (thanks, bye).
-- "services" = anything about services offered, prices, discounts, promotions, packages, OR booking/scheduling an appointment.
+- "services" = anything about services offered, prices, discounts, promotions, packages, OR booking/scheduling an appointment — including short follow-ups like "yes", "book mine", or confirming details when the conversation history shows a booking/service topic already in progress.
 - "language": "en" for English, "ur" for Urdu script, "roman_ur" for Urdu written in Roman/English letters (e.g. "aap ka time kya hai").
 If unsure of intent, default to "general". If unsure of language, default to "en".
 """
 
 
 def supervisor_node(state: AgentState) -> AgentState:
-    raw = generate(SUPERVISOR_SYSTEM_PROMPT, state["message"])
+    raw = generate(SUPERVISOR_SYSTEM_PROMPT, state["message"], history=state.get("history"))
     try:
         parsed = json.loads(raw)
         intent = parsed.get("intent", "general")
@@ -73,6 +80,8 @@ invent details. Keep replies short and warm.
 Salon info:
 {salon_info}
 
+{plain_text_instruction}
+
 {language_instruction}
 """
 
@@ -86,9 +95,10 @@ def general_node(state: AgentState) -> AgentState:
     salon_info = _load_salon_info()
     system_prompt = GENERAL_SYSTEM_PROMPT_TEMPLATE.format(
         salon_info=json.dumps(salon_info, ensure_ascii=False),
+        plain_text_instruction=PLAIN_TEXT_INSTRUCTION,
         language_instruction=LANGUAGE_INSTRUCTION[state["language"]],
     )
-    state["response"] = generate(system_prompt, state["message"])
+    state["response"] = generate(system_prompt, state["message"], history=state.get("history"))
     return state
 
 
@@ -99,6 +109,8 @@ SERVICES_SYSTEM_PROMPT_TEMPLATE = """You are a salon assistant. You handle two t
    only from the services data below, never invent a service or price.
 
 2. Booking appointments. When a customer wants to book:
+   - Use the conversation history to remember details already given (service,
+     date, time, name, phone) — never ask again for something already provided.
    - Figure out the service, date (convert to YYYY-MM-DD; today is {today}),
      and time (convert to 24-hour HH:MM).
    - If you don't have the customer's name or phone number yet, ask for them
@@ -111,6 +123,8 @@ SERVICES_SYSTEM_PROMPT_TEMPLATE = """You are a salon assistant. You handle two t
 
 Services data:
 {services_data}
+
+{plain_text_instruction}
 
 {language_instruction}
 """
@@ -167,10 +181,11 @@ def services_node(state: AgentState) -> AgentState:
     system_prompt = SERVICES_SYSTEM_PROMPT_TEMPLATE.format(
         today=datetime.now().strftime("%Y-%m-%d"),
         services_data=json.dumps(services_data, ensure_ascii=False),
+        plain_text_instruction=PLAIN_TEXT_INSTRUCTION,
         language_instruction=LANGUAGE_INSTRUCTION[state["language"]],
     )
     state["response"] = generate_with_tools(
-        system_prompt, state["message"], BOOKING_TOOLS, TOOL_FUNCTIONS
+        system_prompt, state["message"], BOOKING_TOOLS, TOOL_FUNCTIONS, history=state.get("history")
     )
     return state
 

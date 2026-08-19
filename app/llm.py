@@ -15,14 +15,19 @@ def _get_client() -> Groq:
     return _client
 
 
-def generate(system_prompt: str, user_prompt: str, model: str = "openai/gpt-oss-120b") -> str:
+def _build_messages(system_prompt: str, user_prompt: str, history: list[dict] | None) -> list[dict]:
+    messages = [{"role": "system", "content": system_prompt}]
+    if history:
+        messages.extend(history)
+    messages.append({"role": "user", "content": user_prompt})
+    return messages
+
+
+def generate(system_prompt: str, user_prompt: str, history: list[dict] | None = None, model: str = "openai/gpt-oss-120b") -> str:
     client = _get_client()
     response = client.chat.completions.create(
         model=model,
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ],
+        messages=_build_messages(system_prompt, user_prompt, history),
     )
     return response.choices[0].message.content
 
@@ -32,6 +37,7 @@ def generate_with_tools(
     user_prompt: str,
     tools: list[dict],
     tool_functions: dict,
+    history: list[dict] | None = None,
     model: str = "openai/gpt-oss-120b",
     max_tool_rounds: int = 3,
 ) -> str:
@@ -41,10 +47,7 @@ def generate_with_tools(
     Returns the final plain-text reply after the model has used tools as needed.
     """
     client = _get_client()
-    messages = [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": user_prompt},
-    ]
+    messages = _build_messages(system_prompt, user_prompt, history)
 
     for _ in range(max_tool_rounds):
         response = client.chat.completions.create(
