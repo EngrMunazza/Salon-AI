@@ -1,7 +1,7 @@
 import ServiceCard from '@/components/ServiceCard';
 import { services, promotions } from '@/data/services';
 
-const categories = ['Hair', 'Skin', 'Nails', 'Eyebrows & Lashes', 'Makeup', 'Bridal', 'Spa'] as const;
+const categories = ['Hair', 'Skin', 'Nails', 'Eyebrows & Lashes', 'Makeup', 'Bridal', 'Hand & Foot Spa'] as const;
 
 export default function Services() {
   return (

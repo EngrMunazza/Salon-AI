@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { teamImages } from '@/data/images';
+
 const roles = [
   { title: 'Senior Hair Stylist', specialties: ['Haircuts', 'Styling', 'Keratin treatments'] },
   { title: 'Colour Specialist', specialties: ['Hair coloring', 'Highlights', 'Balayage'] },
@@ -7,10 +10,28 @@ const roles = [
   { title: 'Bridal & Makeup Artist', specialties: ['Bridal packages', 'Party makeup', 'Trials'] },
 ];
 
-function Avatar({ letter }: { letter: string }) {
+function TeamPhoto({ title }: { title: string }) {
+  const [broken, setBroken] = useState(false);
+  const src = teamImages[title];
+
+  if (!src || broken) {
+    return (
+      <div className="h-48 bg-rose/10 flex items-center justify-center">
+        <span className="font-display text-3xl italic text-rose-dark">{title[0]}</span>
+      </div>
+    );
+  }
+
   return (
-    <div className="h-20 w-20 rounded-full bg-rose/15 border border-rose/30 flex items-center justify-center mb-5">
-      <span className="font-display text-2xl italic text-rose-dark">{letter}</span>
+    <div className="h-48 bg-line/40 overflow-hidden">
+      <img
+        src={src}
+        alt={title}
+        loading="lazy"
+        decoding="async"
+        onError={() => setBroken(true)}
+        className="w-full h-full object-cover object-top"
+      />
     </div>
   );
 }
@@ -27,16 +48,18 @@ export default function Team() {
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {roles.map((r) => (
-          <div key={r.title} className="rounded-2xl border border-line bg-white p-6">
-            <Avatar letter={r.title[0]} />
-            <h3 className="font-display text-xl text-espresso mb-3">{r.title}</h3>
-            <ul className="flex flex-wrap gap-2">
-              {r.specialties.map((s) => (
-                <li key={s} className="text-xs text-espresso/70 bg-blush border border-line rounded-full px-3 py-1">
-                  {s}
-                </li>
-              ))}
-            </ul>
+          <div key={r.title} className="rounded-2xl border border-line bg-white overflow-hidden">
+            <TeamPhoto title={r.title} />
+            <div className="p-6">
+              <h3 className="font-display text-xl text-espresso mb-3">{r.title}</h3>
+              <ul className="flex flex-wrap gap-2">
+                {r.specialties.map((s) => (
+                  <li key={s} className="text-xs text-espresso/70 bg-blush border border-line rounded-full px-3 py-1">
+                    {s}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         ))}
       </div>

@@ -9,6 +9,13 @@ export const salonInfo = {
   mapUrl: 'https://maps.google.com',
   phone: '+92 300 1234567',
   whatsapp: '+923001234567', // digits only, no + or spaces, for wa.me links
+  email: 'hello@beautysalon.example', // PLACEHOLDER — replace with real inbox
+  social: {
+    // PLACEHOLDERS — replace with the salon's real profile URLs before launch.
+    instagram: 'https://instagram.com/beautysalon',
+    facebook: 'https://facebook.com/beautysalon',
+    twitter: 'https://twitter.com/beautysalon',
+  },
   timings: {
     Monday: '10:00 AM – 8:00 PM',
     Tuesday: '10:00 AM – 8:00 PM',

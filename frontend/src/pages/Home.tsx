@@ -3,6 +3,7 @@ import ArchFrame from '@/components/ArchFrame';
 import ServiceCard from '@/components/ServiceCard';
 import { services, promotions } from '@/data/services';
 import { salonInfo } from '@/data/salonInfo';
+import { heroImage } from '@/data/images';
 import { useChat } from '@/context/ChatContext';
 
 export default function Home() {
@@ -40,7 +41,19 @@ export default function Home() {
         </div>
 
         <div className="relative h-[420px] hidden md:block animate-rise" style={{ animationDelay: '0.15s' }}>
-          <ArchFrame className="h-full" />
+          <ArchFrame className="h-full" imageUrl={heroImage} />
+        </div>
+
+        <div className="md:hidden -mx-6 animate-rise" style={{ animationDelay: '0.15s' }}>
+          <img
+            src={heroImage}
+            alt={`Inside ${salonInfo.name}`}
+            width={900}
+            height={500}
+            loading="eager"
+            decoding="async"
+            className="w-full h-56 object-cover"
+          />
         </div>
       </section>
 

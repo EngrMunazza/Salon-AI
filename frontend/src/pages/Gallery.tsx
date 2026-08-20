@@ -1,13 +1,30 @@
-const tiles = [
-  { label: 'Hair styling', tone: 'from-rose-light to-rose' },
-  { label: 'Bridal look', tone: 'from-gold-light to-gold' },
-  { label: 'Facial treatment', tone: 'from-rose to-espresso' },
-  { label: 'Nail art', tone: 'from-gold to-rose-dark' },
-  { label: 'Hair coloring', tone: 'from-rose-dark to-espresso' },
-  { label: 'Party makeup', tone: 'from-gold-light to-rose' },
-  { label: 'Before & after', tone: 'from-espresso to-rose-dark' },
-  { label: 'Salon interior', tone: 'from-rose-light to-gold' },
-];
+import { useState } from 'react';
+import { galleryImages } from '@/data/images';
+
+function GalleryTile({ label, url, priority }: { label: string; url: string; priority: boolean }) {
+  const [broken, setBroken] = useState(false);
+
+  if (broken) {
+    return (
+      <div className="aspect-[3/4] rounded-2xl bg-rose/10 flex items-center justify-center">
+        <span className="text-xs text-rose-dark/60">Photo coming soon</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative rounded-2xl overflow-hidden bg-line/40 aspect-[3/4]">
+      <img
+        src={url}
+        alt={label}
+        loading={priority ? 'eager' : 'lazy'}
+        decoding="async"
+        onError={() => setBroken(true)}
+        className="w-full h-full object-cover"
+      />
+    </div>
+  );
+}
 
 export default function Gallery() {
   return (
@@ -15,22 +32,12 @@ export default function Gallery() {
       <p className="text-xs uppercase tracking-[0.2em] text-rose-dark mb-4">Our work</p>
       <h1 className="font-display text-4xl sm:text-5xl text-espresso mb-4">Gallery</h1>
       <p className="text-espresso/70 max-w-xl mb-12">
-        A look at recent work across the salon. Photos below are placeholders — swap in real shots from your
-        stylists whenever you're ready.
+        A look at recent work across the salon.
       </p>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {tiles.map((t, i) => (
-          <div
-            key={t.label}
-            className={`aspect-[3/4] rounded-2xl bg-gradient-to-br ${t.tone} flex items-end p-4 ${
-              i % 5 === 0 ? 'sm:row-span-2 sm:aspect-auto' : ''
-            }`}
-          >
-            <span className="text-blush text-sm font-display italic bg-espresso/30 backdrop-blur-sm rounded-full px-3 py-1">
-              {t.label}
-            </span>
-          </div>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {galleryImages.map((img, i) => (
+          <GalleryTile key={img.label} label={img.label} url={img.url} priority={i < 4} />
         ))}
       </div>
     </div>

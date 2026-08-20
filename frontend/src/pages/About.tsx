@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import ArchFrame from '@/components/ArchFrame';
 import { salonInfo } from '@/data/salonInfo';
+import { aboutImage } from '@/data/images';
 
 const values = [
   {
@@ -34,7 +35,7 @@ export default function About() {
           </p>
         </div>
         <div className="relative h-[320px] hidden md:block">
-          <ArchFrame className="h-full" />
+          <ArchFrame className="h-full" imageUrl={aboutImage} />
         </div>
       </section>
 

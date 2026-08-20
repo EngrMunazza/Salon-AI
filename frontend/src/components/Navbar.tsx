@@ -24,7 +24,7 @@ export default function Navbar() {
           {salonInfo.name}
         </Link>
 
-        <div className="hidden lg:flex items-center gap-6">
+        <div className="hidden xl:flex items-center gap-6">
           {links.map((l) => (
             <Link
               key={l.href}
@@ -38,13 +38,13 @@ export default function Navbar() {
 
         <button
           onClick={() => setIsOpen(true)}
-          className="hidden lg:inline-block rounded-full bg-espresso text-blush px-5 py-2 text-sm tracking-wide hover:bg-rose-dark transition-colors shrink-0"
+          className="hidden xl:inline-block rounded-full bg-espresso text-blush px-5 py-2 text-sm tracking-wide hover:bg-rose-dark transition-colors shrink-0"
         >
           Book via chat
         </button>
 
         <button
-          className="lg:hidden text-espresso"
+          className="xl:hidden text-espresso"
           aria-label={open ? 'Close menu' : 'Open menu'}
           aria-expanded={open}
           onClick={() => setOpen(!open)}
@@ -60,7 +60,7 @@ export default function Navbar() {
       </nav>
 
       {open && (
-        <div className="lg:hidden border-t border-line px-6 py-4 flex flex-col gap-4 bg-blush">
+        <div className="xl:hidden border-t border-line px-6 py-4 flex flex-col gap-4 bg-blush">
           {links.map((l) => (
             <Link key={l.href} to={l.href} onClick={() => setOpen(false)} className="text-espresso text-base">
               {l.label}

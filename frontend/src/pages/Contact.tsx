@@ -1,5 +1,6 @@
 import { salonInfo } from '@/data/salonInfo';
 import { useChat } from '@/context/ChatContext';
+import SocialIcons from '@/components/SocialIcons';
 
 export default function Contact() {
   const days = Object.entries(salonInfo.timings);
@@ -37,14 +38,18 @@ export default function Contact() {
 
           <h2 className="font-display text-xl text-espresso mb-3">Contact</h2>
           <p className="text-sm text-espresso/70 mb-1">{salonInfo.phone}</p>
+          <a href={`mailto:${salonInfo.email}`} className="text-sm text-espresso/70 hover:text-rose-dark block mb-1">
+            {salonInfo.email}
+          </a>
           <a
             href={`https://wa.me/${salonInfo.whatsapp}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm underline decoration-rose underline-offset-4 text-rose-dark"
+            className="text-sm underline decoration-rose underline-offset-4 text-rose-dark block mb-5"
           >
             Message us on WhatsApp
           </a>
+          <SocialIcons className="text-espresso/60" />
         </div>
       </div>
 

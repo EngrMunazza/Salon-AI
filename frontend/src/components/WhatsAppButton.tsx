@@ -1,8 +1,12 @@
 import { salonInfo } from '@/data/salonInfo';
 
+// Official-style WhatsApp green (#25D366), separate from the site's chat
+// widget — this opens a real WhatsApp conversation, the chat widget talks
+// to our own booking assistant.
 export default function WhatsAppButton() {
   return (
-    <a href={`https://wa.me/${salonInfo.whatsapp}`}
+    <a
+      href={`https://wa.me/${salonInfo.whatsapp}`}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with us on WhatsApp"

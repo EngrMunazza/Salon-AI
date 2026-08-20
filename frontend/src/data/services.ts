@@ -6,7 +6,7 @@ export type Service = {
   name: string;
   price: number;
   duration_minutes: number;
-  category: 'Hair' | 'Skin' | 'Nails' | 'Eyebrows & Lashes' | 'Makeup' | 'Bridal' | 'Spa';
+  category: 'Hair' | 'Skin' | 'Nails' | 'Eyebrows & Lashes' | 'Makeup' | 'Bridal' | 'Hand & Foot Spa';
   discount: string | null;
 };
 
@@ -28,7 +28,7 @@ export const services: Service[] = [
   { id: 'svc_015', category: 'Eyebrows & Lashes', name: 'Eyelash Extensions', price: 3500, duration_minutes: 90, discount: null },
   { id: 'svc_016', category: 'Makeup', name: 'Party Makeup', price: 5000, duration_minutes: 90, discount: null },
   { id: 'svc_017', category: 'Bridal', name: 'Bridal Makeup Package', price: 15000, duration_minutes: 180, discount: 'Free trial session included' },
-  { id: 'svc_018', category: 'Spa', name: 'Full Body Massage', price: 4000, duration_minutes: 60, discount: null },
+  { id: 'svc_018', category: 'Hand & Foot Spa', name: 'Paraffin Wax Treatment', price: 2000, duration_minutes: 45, discount: null },
 ];
 
 export const promotions = [

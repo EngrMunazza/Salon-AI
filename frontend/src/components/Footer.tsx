@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { salonInfo } from '@/data/salonInfo';
+import SocialIcons from '@/components/SocialIcons';
 
 const quickLinks = [
   { href: '/services', label: 'Services' },
@@ -16,7 +17,8 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl px-6 py-14 grid gap-10 sm:grid-cols-4">
         <div className="sm:col-span-2">
           <p className="font-display text-2xl mb-3">{salonInfo.name}</p>
-          <p className="text-sm text-blush/70 leading-relaxed max-w-xs">{salonInfo.tagline}</p>
+          <p className="text-sm text-blush/70 leading-relaxed max-w-xs mb-5">{salonInfo.tagline}</p>
+          <SocialIcons className="text-blush/70" />
         </div>
 
         <div>
