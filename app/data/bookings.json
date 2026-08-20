@@ -1,3 +1,14 @@
 {
-  "bookings": []
+  "bookings": [
+    {
+      "booking_id": "BK-D14540",
+      "customer_name": "Goku",
+      "phone": "921112233445",
+      "service": "Party Makeup",
+      "date": "2026-09-01",
+      "time": "11:00",
+      "status": "confirmed",
+      "created_at": "2026-08-19T18:38:44"
+    }
+  ]
 }
