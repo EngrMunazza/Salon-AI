@@ -1,0 +1,10 @@
+__pycache__
+*.pyc
+.venv
+Venv
+.env
+.git
+.gitignore
+node_modules
+frontend
+*.md
