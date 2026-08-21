@@ -13,6 +13,7 @@ import Team from '@/pages/Team';
 import About from '@/pages/About';
 import FAQ from '@/pages/FAQ';
 import Contact from '@/pages/Contact';
+import Reviews from '@/pages/Reviews';
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
             <Route path="/team" element={<Team />} />
             <Route path="/about" element={<About />} />
             <Route path="/faq" element={<FAQ />} />
+            <Route path="/reviews" element={<Reviews />} />
             <Route path="/contact" element={<Contact />} />
           </Routes>
         </main>

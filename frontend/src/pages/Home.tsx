@@ -89,7 +89,7 @@ export default function Home() {
       <div className="scallop-divider" aria-hidden="true" />
 
       <section className="mx-auto max-w-6xl px-6 py-20">
-        <div className="grid sm:grid-cols-3 gap-5">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           <Link
             to="/gallery"
             className="group rounded-2xl bg-gradient-to-br from-rose-light to-rose p-8 flex flex-col justify-end h-56 hover:opacity-95 transition-opacity"
@@ -103,6 +103,13 @@ export default function Home() {
           >
             <span className="font-display text-2xl text-blush mb-1">Team</span>
             <span className="text-sm text-blush/80">Meet the specialists</span>
+          </Link>
+          <Link
+            to="/reviews"
+            className="group rounded-2xl bg-gradient-to-br from-rose-dark to-gold p-8 flex flex-col justify-end h-56 hover:opacity-95 transition-opacity"
+          >
+            <span className="font-display text-2xl text-blush mb-1">Reviews</span>
+            <span className="text-sm text-blush/80">Hear from our clients</span>
           </Link>
           <Link
             to="/faq"
