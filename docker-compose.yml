@@ -6,6 +6,21 @@ services:
     env_file:
       - .env
     volumes:
-      # Persist bookings.json, services.json, salon_info.json edits without rebuilding the image
+      # Persist bookings.json, reviews.json, services.json edits without rebuilding the image
       - ./app/data:/app/app/data
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # Browser talks to the backend at this host-visible URL. Since this
+        # is baked in at build time, it must point to wherever the backend
+        # is reachable from the *browser*, not the Docker-internal network
+        # (i.e. not http://backend:8000 — the browser can't resolve that).
+        VITE_API_URL: http://localhost:8000
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
     restart: unless-stopped
