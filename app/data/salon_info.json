@@ -4,6 +4,7 @@
   "map_url": "https://maps.google.com",
   "phone": "+92 300 1234567",
   "email": "hello@beautysalon.example",
+  "clientele": "Ladies only — this is a women's salon, we do not offer services to male customers",
   "timings": {
     "monday": "10:00 AM - 8:00 PM",
     "tuesday": "10:00 AM - 8:00 PM",
