@@ -1,7 +1,9 @@
 {
   "staff": [
-    { "id": "stf_001", "name": "Sarah", "specialties": ["Hair"] },
-    { "id": "stf_002", "name": "Ayesha", "specialties": ["Skin", "Hand & Foot Spa"] },
+    {
+  "staff": [
+    { "id": "stf_001", "name": "Zahra", "specialties": ["Hair"] },
+    { "id": "stf_002", "name": "Rosey", "specialties": ["Skin", "Hand & Foot Spa"] },
     { "id": "stf_003", "name": "Hina", "specialties": ["Bridal", "Makeup", "Eyebrows & Lashes"] },
     { "id": "stf_004", "name": "Mariam", "specialties": ["Nails"] }
   ]
