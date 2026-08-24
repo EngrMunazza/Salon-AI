@@ -50,7 +50,7 @@ JSON only, no extra text:
 
 Rules:
 - "general" = greetings, questions about location/address/map/timings/contact, or the customer ending the conversation (thanks, bye).
-- "services" = anything about services offered, prices, discounts, promotions, packages, OR booking/scheduling an appointment — including short follow-ups like "yes", "book mine", or confirming details when the conversation history shows a booking/service topic already in progress.
+- "services" = anything about services offered, prices, discounts, promotions, packages, staff/stylists/team members (e.g. "who works there", "staff?", "staff list"), OR booking/scheduling an appointment — including short follow-ups like "yes", "book mine", or confirming details when the conversation history shows a booking/service topic already in progress.
 - "language": "en" for English, "ur" for Urdu script, "roman_ur" for Urdu written in Roman/English letters (e.g. "aap ka time kya hai").
 If unsure of intent, default to "general". If unsure of language, default to "en".
 """
