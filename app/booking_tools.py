@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import uuid
 from datetime import datetime, timedelta
 
@@ -99,8 +100,29 @@ def _suggest_alternative_times(date: str, open_time: str, close_time: str, exclu
     return all_slots[:max_suggestions]
 
 
+def _normalize_phone(phone: str) -> str | None:
+    """
+    Accepts Pakistani mobile numbers in common formats:
+    03001234567, +923001234567, 923001234567, with or without spaces/dashes.
+    Returns a normalized "03XXXXXXXXX" string, or None if invalid.
+    """
+    digits = re.sub(r"\D", "", phone)  # strip everything except digits
+
+    if digits.startswith("92") and len(digits) == 12:
+        digits = "0" + digits[2:]
+
+    if len(digits) == 11 and digits.startswith("03"):
+        return digits
+
+    return None
+
+
 def create_booking(customer_name: str, phone: str, service: str, date: str, time: str) -> dict:
     """Assumes availability was already checked. Creates and persists the booking."""
+    normalized_phone = _normalize_phone(phone)
+    if normalized_phone is None:
+        return {"success": False, "reason": "invalid_phone"}
+
     availability = check_availability(date, time)
     if not availability["available"]:
         return {"success": False, "reason": availability["reason"], "alternative_times": availability["alternative_times"]}
@@ -109,7 +131,7 @@ def create_booking(customer_name: str, phone: str, service: str, date: str, time
     booking = {
         "booking_id": f"BK-{uuid.uuid4().hex[:6].upper()}",
         "customer_name": customer_name,
-        "phone": phone,
+        "phone": normalized_phone,
         "service": service,
         "date": date,
         "time": time,

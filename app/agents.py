@@ -125,6 +125,10 @@ SERVICES_SYSTEM_PROMPT_TEMPLATE = """You are a salon assistant. You handle two t
      before calling create_booking.
    - Call check_availability first if you're unsure a slot is free.
    - Call create_booking to actually reserve it once you have all details.
+   - If create_booking returns reason "invalid_phone", tell the customer
+     the phone number doesn't look valid and ask for a Pakistani mobile
+     number (e.g. 03001234567), then try again — do not call create_booking
+     again until you have a number that looks realistic.
    - If a slot is taken or outside business hours, apologize and offer the
      alternative_times returned by the tool — never make up times yourself.
    - After a successful booking, confirm the booking_id, service, date and time back to the customer.
