@@ -159,6 +159,11 @@ SERVICES_SYSTEM_PROMPT_TEMPLATE = """You are a salon assistant. You handle two t
      cancellation clearly.
    - Never guess a booking_id — always get it from find_bookings first.
 
+4. Questions about staff, stylists, or "who works here". Answer ONLY using
+   the Staff data below — list every name and specialty exactly as given.
+   NEVER invent, guess, or recall staff names from your own knowledge, even
+   if the question is phrased casually (e.g. "staff?", "who works there").
+
 Staff:
 {staff_list}
 
