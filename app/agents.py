@@ -6,7 +6,7 @@ from datetime import datetime
 from langgraph.graph import StateGraph, END
 
 from app.llm import generate, generate_with_tools
-from app.booking_tools import check_availability, create_booking
+from app.booking_tools import check_availability, create_booking, get_staff_list
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
@@ -121,6 +121,12 @@ SERVICES_SYSTEM_PROMPT_TEMPLATE = """You are a salon assistant. You handle two t
      date, time, name, phone) — never ask again for something already provided.
    - Figure out the service, date (convert to YYYY-MM-DD; today is {today}),
      and time (convert to 24-hour HH:MM).
+   - Staff list and their specialties are provided below. If the customer
+     names a specific staff member, pass staff_name to check_availability
+     and create_booking. If they don't care who does it, pass category
+     (the service's category, e.g. "Hair", "Skin") instead and let the
+     tool auto-assign an available staff member — then mention who was
+     assigned in your confirmation.
    - If you don't have the customer's name or phone number yet, ask for them
      before calling create_booking.
    - Call check_availability first if you're unsure a slot is free.
@@ -132,6 +138,9 @@ SERVICES_SYSTEM_PROMPT_TEMPLATE = """You are a salon assistant. You handle two t
    - If a slot is taken or outside business hours, apologize and offer the
      alternative_times returned by the tool — never make up times yourself.
    - After a successful booking, confirm the booking_id, service, date and time back to the customer.
+
+Staff:
+{staff_list}
 
 Services data:
 {services_data}
@@ -152,12 +161,14 @@ BOOKING_TOOLS = [
         "type": "function",
         "function": {
             "name": "check_availability",
-            "description": "Check if a given date and time slot is available for booking.",
+            "description": "Check if a given date and time slot is available for booking. Pass staff_name if the customer wants a specific person, or category to auto-find any available staff member for that service category.",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "date": {"type": "string", "description": "Date in YYYY-MM-DD format"},
                     "time": {"type": "string", "description": "Time in 24-hour HH:MM format"},
+                    "staff_name": {"type": "string", "description": "Specific staff member's name, if the customer requested one"},
+                    "category": {"type": "string", "description": "Service category (e.g. Hair, Skin) to auto-assign any available staff member with that specialty"},
                 },
                 "required": ["date", "time"],
             },
@@ -176,9 +187,19 @@ BOOKING_TOOLS = [
                     "service": {"type": "string"},
                     "date": {"type": "string", "description": "YYYY-MM-DD"},
                     "time": {"type": "string", "description": "24-hour HH:MM"},
+                    "staff_name": {"type": "string", "description": "Specific staff member's name, if the customer requested one"},
+                    "category": {"type": "string", "description": "Service category, used to auto-assign staff if staff_name wasn't given"},
                 },
                 "required": ["customer_name", "phone", "service", "date", "time"],
             },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_staff_list",
+            "description": "Look up all staff members and their specialties.",
+            "parameters": {"type": "object", "properties": {}},
         },
     },
 ]
@@ -186,6 +207,7 @@ BOOKING_TOOLS = [
 TOOL_FUNCTIONS = {
     "check_availability": check_availability,
     "create_booking": create_booking,
+    "get_staff_list": get_staff_list,
 }
 
 
@@ -196,9 +218,11 @@ def _load_services() -> dict:
 
 def services_node(state: AgentState) -> AgentState:
     services_data = _load_services()
+    staff_data = get_staff_list()
     system_prompt = SERVICES_SYSTEM_PROMPT_TEMPLATE.format(
         today=datetime.now().strftime("%Y-%m-%d"),
         services_data=json.dumps(services_data, ensure_ascii=False),
+        staff_list=json.dumps(staff_data, ensure_ascii=False),
         plain_text_instruction=PLAIN_TEXT_INSTRUCTION,
         currency_instruction=CURRENCY_INSTRUCTION,
         language_instruction=LANGUAGE_INSTRUCTION[state["language"]],
