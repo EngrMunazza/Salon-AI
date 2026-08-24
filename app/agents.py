@@ -57,13 +57,20 @@ If unsure of intent, default to "general". If unsure of language, default to "en
 
 
 def supervisor_node(state: AgentState) -> AgentState:
-    raw = generate(SUPERVISOR_SYSTEM_PROMPT, state["message"], history=state.get("history"))
     try:
-        parsed = json.loads(raw)
-        intent = parsed.get("intent", "general")
-        language = parsed.get("language", "en")
-    except (json.JSONDecodeError, AttributeError):
+        raw = generate(SUPERVISOR_SYSTEM_PROMPT, state["message"], history=state.get("history"))
+    except Exception:
+        raw = None
+
+    if raw is None:
         intent, language = "general", "en"
+    else:
+        try:
+            parsed = json.loads(raw)
+            intent = parsed.get("intent", "general")
+            language = parsed.get("language", "en")
+        except (json.JSONDecodeError, AttributeError):
+            intent, language = "general", "en"
 
     if intent not in ("general", "services"):
         intent = "general"
