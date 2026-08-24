@@ -13,7 +13,11 @@ const faqs = [
   },
   {
     q: 'Can I cancel or reschedule a booking?',
-    a: "Online self-service cancellation is coming soon. For now, please call or WhatsApp us directly and we'll sort it out.",
+    a: 'Yes — just tell the chat assistant, e.g. "reschedule my appointment, phone 03001234567" or "cancel my booking." It looks up your active bookings by phone number and handles it on the spot.',
+  },
+  {
+    q: 'Can I request a specific stylist?',
+    a: 'Yes — mention their name when booking (see our Team page for who specialises in what), or just tell the assistant what you need and it can suggest the right person.',
   },
   {
     q: 'Are the prices on the services page final?',

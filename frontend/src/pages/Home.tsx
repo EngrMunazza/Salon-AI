@@ -52,7 +52,7 @@ export default function Home() {
             height={500}
             loading="eager"
             decoding="async"
-            className="w-full h-56 object-cover"
+            className="w-full h-56 object-contain"
           />
         </div>
       </section>

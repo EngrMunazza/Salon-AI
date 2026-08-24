@@ -18,7 +18,7 @@ export default function ServiceCard({ service, index }: { service: Service; inde
             loading="lazy"
             decoding="async"
             onError={() => setBroken(true)}
-            className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
           />
         </div>
       )}

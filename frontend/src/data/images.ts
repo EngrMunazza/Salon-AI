@@ -41,10 +41,11 @@ export const galleryImages = [
 ];
 
 export const teamImages: Record<string, string> = {
-  'Senior Hair Stylist': '/images/team/senior-stylist.jpg',
-  'Colour Specialist': '/images/team/colour-specialist.jpg',
-  'Skin & Facial Specialist': '/images/team/skin-specialist.jpg',
-  'Nail Technician': '/images/team/nail-technician.jpg',
-  'Brow & Lash Artist': '/images/team/brow-lash-artist.jpg',
-  'Bridal & Makeup Artist': '/images/team/bridal-artist.jpg',
+  Zahra: '/images/team/senior-stylist.jpg',
+  Rosey: '/images/team/skin-specialist.jpg',
+  Hina: '/images/team/bridal-artist.jpg',
+  Mariam: '/images/team/nail-technician.jpg',
+  Sana: '/images/team/colour-specialist.jpg',
+  Amna: '/images/team/makeup-specialist.jpg',
+  Bushra: '/images/team/brow-lash-artist.jpg',
 };

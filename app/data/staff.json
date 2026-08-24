@@ -1,10 +1,11 @@
 {
   "staff": [
-    {
-  "staff": [
     { "id": "stf_001", "name": "Zahra", "specialties": ["Hair"] },
-    { "id": "stf_002", "name": "Rosey", "specialties": ["Skin", "Hand & Foot Spa"] },
-    { "id": "stf_003", "name": "Hina", "specialties": ["Bridal", "Makeup", "Eyebrows & Lashes"] },
-    { "id": "stf_004", "name": "Mariam", "specialties": ["Nails"] }
+    { "id": "stf_002", "name": "Rosey", "specialties": ["Skin"] },
+    { "id": "stf_003", "name": "Hina", "specialties": ["Bridal"] },
+    { "id": "stf_004", "name": "Mariam", "specialties": ["Nails"] },
+    { "id": "stf_005", "name": "Sana", "specialties": ["Hand & Foot Spa"] },
+    { "id": "stf_006", "name": "Amna", "specialties": ["Makeup"] },
+    { "id": "stf_007", "name": "Bushra", "specialties": ["Eyebrows & Lashes"] }
   ]
 }

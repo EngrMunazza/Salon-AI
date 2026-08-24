@@ -129,8 +129,9 @@ export default function ChatWidget() {
           <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-blush">
             {messages.length === 0 && (
               <p className="text-sm text-espresso/60 leading-relaxed">
-                Aap Urdu, Roman Urdu ya English mein baat kar sakte hain — ask about services, prices, timings, or
-                say something like "book a haircut tomorrow at 3pm" to reserve a slot.
+                Aap Urdu, Roman Urdu ya English mein baat kar sakte hain; ask about services, prices, timings, or
+                say something like "book a haircut tomorrow at 3pm" to reserve a slot. You can also reschedule or
+                cancel an existing booking, or ask which stylist to book with.
               </p>
             )}
             {messages.map((m, i) => (

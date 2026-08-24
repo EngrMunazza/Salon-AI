@@ -20,7 +20,7 @@ function GalleryTile({ label, url, priority }: { label: string; url: string; pri
         loading={priority ? 'eager' : 'lazy'}
         decoding="async"
         onError={() => setBroken(true)}
-        className="w-full h-full object-cover"
+        className="w-full h-full object-contain"
       />
     </div>
   );
