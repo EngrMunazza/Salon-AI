@@ -6,7 +6,14 @@ from datetime import datetime
 from langgraph.graph import StateGraph, END
 
 from app.llm import generate, generate_with_tools
-from app.booking_tools import check_availability, create_booking, get_staff_list
+from app.booking_tools import (
+    check_availability,
+    create_booking,
+    get_staff_list,
+    find_bookings,
+    reschedule_booking,
+    cancel_booking,
+)
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
@@ -139,6 +146,19 @@ SERVICES_SYSTEM_PROMPT_TEMPLATE = """You are a salon assistant. You handle two t
      alternative_times returned by the tool — never make up times yourself.
    - After a successful booking, confirm the booking_id, service, date and time back to the customer.
 
+3. Rescheduling or cancelling an existing booking. When a customer wants to
+   change or cancel an appointment:
+   - Ask for their phone number if you don't have it, then call find_bookings
+     to look up their active bookings.
+   - If they have more than one active booking, list them (service, date,
+     time) and ask which one they mean before doing anything.
+   - To reschedule: call reschedule_booking with that booking's booking_id
+     and the new date/time. If the new slot isn't available, apologize and
+     offer the alternative_times returned by the tool.
+   - To cancel: call cancel_booking with the booking_id, then confirm the
+     cancellation clearly.
+   - Never guess a booking_id — always get it from find_bookings first.
+
 Staff:
 {staff_list}
 
@@ -194,12 +214,56 @@ BOOKING_TOOLS = [
             },
         },
     },
-    {
+       {
         "type": "function",
         "function": {
             "name": "get_staff_list",
             "description": "Look up all staff members and their specialties.",
             "parameters": {"type": "object", "properties": {}},
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "find_bookings",
+            "description": "Look up a customer's active bookings by phone number, to identify which one to reschedule or cancel.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "phone": {"type": "string", "description": "Customer's phone number"},
+                },
+                "required": ["phone"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "reschedule_booking",
+            "description": "Move an existing confirmed booking to a new date/time. Get the booking_id from find_bookings first.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "booking_id": {"type": "string"},
+                    "new_date": {"type": "string", "description": "YYYY-MM-DD"},
+                    "new_time": {"type": "string", "description": "24-hour HH:MM"},
+                },
+                "required": ["booking_id", "new_date", "new_time"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "cancel_booking",
+            "description": "Cancel an existing confirmed booking. Get the booking_id from find_bookings first.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "booking_id": {"type": "string"},
+                },
+                "required": ["booking_id"],
+            },
         },
     },
 ]
@@ -208,8 +272,10 @@ TOOL_FUNCTIONS = {
     "check_availability": check_availability,
     "create_booking": create_booking,
     "get_staff_list": get_staff_list,
+    "find_bookings": find_bookings,
+    "reschedule_booking": reschedule_booking,
+    "cancel_booking": cancel_booking,
 }
-
 
 def _load_services() -> dict:
     with open(os.path.join(DATA_DIR, "services.json"), "r", encoding="utf-8") as f:

@@ -178,6 +178,68 @@ def _normalize_phone(phone: str) -> str | None:
 
     return None
 
+def find_bookings(phone: str) -> dict:
+    """Tool: looks up a customer's active (confirmed) bookings by phone number,
+    so they can be identified for reschedule/cancel without needing a booking_id."""
+    normalized_phone = _normalize_phone(phone)
+    if normalized_phone is None:
+        return {"success": False, "reason": "invalid_phone"}
+
+    bookings = _load_bookings()
+    matches = [b for b in bookings if b["phone"] == normalized_phone and b["status"] == "confirmed"]
+    matches.sort(key=lambda b: (b["date"], b["time"]))
+    return {"success": True, "bookings": matches}
+
+
+def _find_booking_by_id(booking_id: str) -> dict | None:
+    for b in _load_bookings():
+        if b["booking_id"] == booking_id:
+            return b
+    return None
+
+
+def cancel_booking(booking_id: str) -> dict:
+    """Tool: cancels an existing confirmed booking, freeing up its slot."""
+    bookings = _load_bookings()
+    for b in bookings:
+        if b["booking_id"] == booking_id:
+            if b["status"] != "confirmed":
+                return {"success": False, "reason": "not_active"}
+            b["status"] = "cancelled"
+            _save_bookings(bookings)
+            return {"success": True, "booking": b}
+    return {"success": False, "reason": "not_found"}
+
+
+def reschedule_booking(booking_id: str, new_date: str, new_time: str) -> dict:
+    """Tool: moves an existing confirmed booking to a new date/time, keeping
+    the same staff member and checking their availability at the new slot."""
+    bookings = _load_bookings()
+    target = None
+    for b in bookings:
+        if b["booking_id"] == booking_id:
+            target = b
+            break
+
+    if target is None:
+        return {"success": False, "reason": "not_found"}
+    if target["status"] != "confirmed":
+        return {"success": False, "reason": "not_active"}
+
+    staff_name = target.get("staff")
+    availability = check_availability(new_date, new_time, staff_name=staff_name)
+    if not availability["available"]:
+        return {
+            "success": False,
+            "reason": availability["reason"],
+            "alternative_times": availability["alternative_times"],
+        }
+
+    old_date, old_time = target["date"], target["time"]
+    target["date"] = new_date
+    target["time"] = new_time
+    _save_bookings(bookings)
+    return {"success": True, "booking": target, "old_date": old_date, "old_time": old_time}
 
 def create_booking(
     customer_name: str,
