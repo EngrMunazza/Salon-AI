@@ -318,6 +318,7 @@ def services_node(state: AgentState) -> AgentState:
         staff_list=json.dumps(staff_data, ensure_ascii=False),
         plain_text_instruction=PLAIN_TEXT_INSTRUCTION,
         currency_instruction=CURRENCY_INSTRUCTION,
+        no_guessing_instruction=NO_GUESSING_INSTRUCTION,
         language_instruction=LANGUAGE_INSTRUCTION[state["language"]],
     )
     
