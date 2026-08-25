@@ -29,6 +29,16 @@ PLAIN_TEXT_INSTRUCTION = (
     "and lists as simple sentences or numbered lines like \"1. Haircut - 1500\"."
 )
 
+NO_GUESSING_INSTRUCTION = (
+    "Only state facts that are explicitly present in the salon info or "
+    "services data provided below. Never guess or assume standard/typical "
+    "salon policies — this includes payment methods, refund or cancellation "
+    "policies, parking, discounts beyond what's listed, or anything else not "
+    "explicitly given. If asked about something not covered by the provided "
+    "data, say you don't have that information and suggest contacting the "
+    "salon directly by phone, rather than giving a plausible-sounding guess."
+)
+
 CURRENCY_INSTRUCTION = "All prices are in Pakistani Rupees. Always write prices as 'Rs. 1500', never use ₹, $, ₱, or any other currency symbol."
 
 class AgentState(TypedDict, total=False):
@@ -103,6 +113,8 @@ offer services to male customers.
 
 {currency_instruction}
 
+{no_guessing_instruction}
+
 {language_instruction}
 """
 
@@ -118,6 +130,7 @@ def general_node(state: AgentState) -> AgentState:
         salon_info=json.dumps(salon_info, ensure_ascii=False),
         plain_text_instruction=PLAIN_TEXT_INSTRUCTION,
         currency_instruction=CURRENCY_INSTRUCTION,
+        no_guessing_instruction=NO_GUESSING_INSTRUCTION,
         language_instruction=LANGUAGE_INSTRUCTION[state["language"]],
     )
     state["response"] = generate(system_prompt, state["message"], history=state.get("history"))
@@ -184,6 +197,8 @@ offer services to male customers.
 {plain_text_instruction}
 
 {currency_instruction}
+
+{no_guessing_instruction}
 
 {language_instruction}
 """
